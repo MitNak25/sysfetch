@@ -1,0 +1,5 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.swp
+*~
