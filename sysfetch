@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+info() {
+  local label=$1 value=$2
+  printf '  %-12s %s\n' "$label" "$value"
+}
+
+os_name="Unknown"
+if [[ -r /etc/os-release ]]; then
+  # shellcheck disable=SC1091
+  . /etc/os-release
+  os_name=${PRETTY_NAME:-${NAME:-Unknown}}
+elif command -v uname >/dev/null 2>&1; then
+  os_name=$(uname -s)
+fi
+
+kernel=$(uname -r 2>/dev/null || printf 'Unknown')
+architecture=$(uname -m 2>/dev/null || printf 'Unknown')
+if [[ -r /proc/uptime ]]; then
+  uptime_seconds=${UPTIME_SECONDS:-${UPTIME:-}}
+  uptime_seconds=${uptime_seconds:-${1:-}}
+  uptime_seconds=${uptime_seconds:-$(awk '{printf "%d", $1}' /proc/uptime)}
+  uptime_display=$(printf '%dd %dh %dm' \
+    "$((uptime_seconds / 86400))" \
+    "$((uptime_seconds % 86400 / 3600))" \
+    "$((uptime_seconds % 3600 / 60))")
+elif command -v uptime >/dev/null 2>&1; then
+  uptime_display=$(uptime -p 2>/dev/null || uptime)
+else
+  uptime_display="Unknown"
+fi
+shell_name=${SHELL##*/}
+shell_name=${shell_name:-Unknown}
+
+printf ' /\_/\\\n( o.o )  sysfetch\n > ^ <\n'
+info "OS" "$os_name"
+info "Kernel" "$kernel"
+info "Arch" "$architecture"
+info "Uptime" "$uptime_display"
+info "Shell" "$shell_name"
