@@ -9,4 +9,4 @@ chmod +x sysfetch sysfetch.sh
 ./sysfetch
 ```
 
-The script works on Linux and falls back to the platform's `uptime` command when `/proc/uptime` is unavailable.
+The script is primarily intended for Linux and falls back to the platform's `uptime` command when `/proc/uptime` is unavailable.
