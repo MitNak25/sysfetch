@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-info() {
-  local label=$1 value=$2
-  printf '  %-12s %s\n' "$label" "$value"
-}
+info() { printf '  %-12s %s\n' "$1" "$2"; }
 
 os_name="Unknown"
 if [[ -r /etc/os-release ]]; then
@@ -17,23 +14,26 @@ fi
 
 kernel=$(uname -r 2>/dev/null || printf 'Unknown')
 architecture=$(uname -m 2>/dev/null || printf 'Unknown')
+
+uptime_display="Unknown"
 if [[ -r /proc/uptime ]]; then
-  uptime_seconds=${UPTIME_SECONDS:-${UPTIME:-}}
-  uptime_seconds=${uptime_seconds:-${1:-}}
-  uptime_seconds=${uptime_seconds:-$(awk '{printf "%d", $1}' /proc/uptime)}
-  uptime_display=$(printf '%dd %dh %dm' \
-    "$((uptime_seconds / 86400))" \
-    "$((uptime_seconds % 86400 / 3600))" \
-    "$((uptime_seconds % 3600 / 60))")
-elif command -v uptime >/dev/null 2>&1; then
-  uptime_display=$(uptime -p 2>/dev/null || uptime)
-else
-  uptime_display="Unknown"
+  raw_uptime=$(awk 'NR == 1 { print $1 }' /proc/uptime)
+  if [[ $raw_uptime =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+    uptime_seconds=${raw_uptime%.*}
+    uptime_seconds=${uptime_seconds:-0}
+    uptime_display=$(printf '%dd %dh %dm' \
+      "$((uptime_seconds / 86400))" \
+      "$((uptime_seconds % 86400 / 3600))" \
+      "$((uptime_seconds % 3600 / 60))")
+  fi
 fi
+if [[ $uptime_display == "Unknown" ]] && command -v uptime >/dev/null 2>&1; then
+  uptime_display=$(uptime -p 2>/dev/null || uptime 2>/dev/null || printf 'Unknown')
+fi
+
 shell_name=${SHELL##*/}
 shell_name=${shell_name:-Unknown}
-
-printf ' /\_/\\\n( o.o )  sysfetch\n > ^ <\n'
+printf ' /\\_/\\\\\n( o.o )  sysfetch\n > ^ <\n'
 info "OS" "$os_name"
 info "Kernel" "$kernel"
 info "Arch" "$architecture"

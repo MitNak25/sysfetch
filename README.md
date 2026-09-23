@@ -1,18 +1,12 @@
 # sysfetch
 
-A simple, lightweight system information script written in Bash. It displays your OS, kernel version, architecture, uptime, and current shell alongside a clean ASCII cat.
-
-## Installation
-
-1. Clone this repository or copy the script.
-2. Make the script executable:
-   ```bash
-   chmod +x sysfetch
-   ```
+A small Bash utility that prints the operating system, kernel, architecture, uptime, and shell.
 
 ## Usage
 
-Run the script directly from your terminal:
 ```bash
+chmod +x sysfetch sysfetch.sh
 ./sysfetch
 ```
+
+The script works on Linux and falls back to the platform's `uptime` command when `/proc/uptime` is unavailable.
