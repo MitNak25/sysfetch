@@ -1,5 +1,2 @@
-# Archivos del sistema
-.DS_Store
-Thumbs.db
-*.swp
-*~
+# Legacy placeholder
+# Use .gitignore instead; Git recognizes only the dotted filename.
